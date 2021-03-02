@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    volumes:
+        - ./data-node:/data/db
+    ports:
+        - "${MONGODB_PORT}:${MONGODB_PORT}"
+    networks:
+      - backend_network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend/backend
+    depends_on:
+      - mongodb
+    environment:
+      - REACT_APP_SERVER_PORT=${APP_PORT}
+      - MONGODB_IP=${MONGODB_IP}
+      - MONGODB_PORT=${MONGODB_PORT}
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
