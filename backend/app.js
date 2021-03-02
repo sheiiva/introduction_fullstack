@@ -39,10 +39,16 @@ app.post('/api/stuff', (req, res, next) => {
         .catch(err => res.status(400).json({ error: err }));
 });
 
+app.put('/api/stuff/:id', (req, res, next) => {
+    Thing.updateOne({ _id: req.params.id}, { ...req.body, _id: req.params.id })
+        .then(thing => res.status(200).json( { message: 'Object modified!' }))
+        .catch(err => res.status(404).json({ err }));
+    });
+
 app.get('/api/stuff/:id', (req, res, next) => {
     Thing.findOne({ _id: req.params.id })
         .then(thing => res.status(200).json(thing))
-        .catch(err => res.status(404).json({ err }));
+        .catch(err => res.status(400).json({ err }));
 });
 
 app.use('/api/stuff', (req, res, next) => {
