@@ -20,3 +20,6 @@ build:
 
 clean-db:
 	sudo rm -rf data-node
+
+log-server:
+	sudo docker logs backend
